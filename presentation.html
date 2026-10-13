@@ -1,0 +1,1220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Nexus AI Workspace — Presentation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+/* ===========================================
+   VIEWPORT FITTING: MANDATORY BASE STYLES
+   =========================================== */
+html, body { height: 100%; overflow-x: hidden; margin: 0; padding: 0; }
+html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
+
+.slide {
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+    scroll-snap-align: start;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.slide-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    max-height: 100%;
+    overflow: hidden;
+    padding: var(--slide-padding);
+    position: relative;
+    z-index: 2;
+}
+
+:root {
+    --title-size: clamp(1.5rem, 5vw, 4rem);
+    --h2-size: clamp(1.25rem, 3.5vw, 2.5rem);
+    --h3-size: clamp(1rem, 2.5vw, 1.75rem);
+    --body-size: clamp(0.75rem, 1.5vw, 1.125rem);
+    --small-size: clamp(0.65rem, 1vw, 0.875rem);
+    --slide-padding: clamp(1rem, 4vw, 4rem);
+    --content-gap: clamp(0.5rem, 2vw, 2rem);
+    --element-gap: clamp(0.25rem, 1vw, 1rem);
+
+    /* Neon Cyber palette */
+    --bg-primary: #0a0a1a;
+    --bg-secondary: #0f0f2a;
+    --cyan: #00f0ff;
+    --magenta: #ff0080;
+    --cyan-dim: rgba(0, 240, 255, 0.15);
+    --magenta-dim: rgba(255, 0, 128, 0.12);
+    --text-primary: #e8e8f0;
+    --text-secondary: rgba(232, 232, 240, 0.7);
+    --text-muted: rgba(232, 232, 240, 0.4);
+    --card-bg: rgba(15, 15, 42, 0.6);
+    --card-border: rgba(0, 240, 255, 0.15);
+    --glow-cyan: 0 0 20px rgba(0, 240, 255, 0.3), 0 0 60px rgba(0, 240, 255, 0.1);
+    --glow-magenta: 0 0 20px rgba(255, 0, 128, 0.3), 0 0 60px rgba(255, 0, 128, 0.1);
+    --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+* { box-sizing: border-box; }
+
+body {
+    font-family: 'Space Grotesk', sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+}
+
+h1, h2, h3 { font-family: 'Archivo', sans-serif; margin: 0; }
+
+h1 { font-size: var(--title-size); font-weight: 900; line-height: 1.05; }
+h2 { font-size: var(--h2-size); font-weight: 800; line-height: 1.1; }
+h3 { font-size: var(--h3-size); font-weight: 700; line-height: 1.15; }
+
+p { font-size: var(--body-size); line-height: 1.5; margin: 0; color: var(--text-secondary); }
+
+/* ===========================================
+   NEON CYBER PRESET — CORE STYLES
+   =========================================== */
+
+/* Grid background */
+.grid-bg {
+    background-image:
+        linear-gradient(rgba(0, 240, 255, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 240, 255, 0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+}
+
+/* Gradient mesh backgrounds */
+.gradient-mesh {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+}
+.gradient-mesh::before,
+.gradient-mesh::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.4;
+}
+.gradient-mesh::before {
+    width: 50vw;
+    height: 50vw;
+    top: -10%;
+    right: -10%;
+    background: radial-gradient(circle, rgba(0, 240, 255, 0.2), transparent 70%);
+    animation: floatOrb 12s ease-in-out infinite;
+}
+.gradient-mesh::after {
+    width: 40vw;
+    height: 40vw;
+    bottom: -10%;
+    left: -10%;
+    background: radial-gradient(circle, rgba(255, 0, 128, 0.15), transparent 70%);
+    animation: floatOrb 15s ease-in-out infinite reverse;
+}
+
+@keyframes floatOrb {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(30px, -30px) scale(1.1); }
+    66% { transform: translate(-20px, 20px) scale(0.9); }
+}
+
+/* Particle canvas */
+#particle-canvas {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+}
+
+/* Slide accent bar */
+.slide-accent {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(to bottom, var(--cyan), var(--magenta));
+    z-index: 3;
+    opacity: 0.6;
+}
+
+/* Neon text glow */
+.neon-text-cyan {
+    color: var(--cyan);
+    text-shadow: 0 0 20px rgba(0, 240, 255, 0.3), 0 0 40px rgba(0, 240, 255, 0.1);
+}
+.neon-text-magenta {
+    color: var(--magenta);
+    text-shadow: 0 0 20px rgba(255, 0, 128, 0.3), 0 0 40px rgba(255, 0, 128, 0.1);
+}
+
+/* Neon button */
+.neon-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.8rem 2rem;
+    border: 1px solid var(--cyan);
+    background: transparent;
+    color: var(--cyan);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: var(--body-size);
+    font-weight: 500;
+    text-decoration: none;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s var(--ease-out-expo);
+    letter-spacing: 0.05em;
+}
+.neon-button:hover {
+    background: var(--cyan-dim);
+    box-shadow: var(--glow-cyan);
+    transform: translateY(-2px);
+}
+.neon-button::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(0, 240, 255, 0.1), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.6s var(--ease-out-expo);
+}
+.neon-button:hover::after {
+    transform: translateX(100%);
+}
+
+/* Cards */
+.neon-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    backdrop-filter: blur(12px);
+    padding: clamp(1rem, 2vw, 1.5rem);
+    transition: all 0.4s var(--ease-out-expo);
+    position: relative;
+    overflow: hidden;
+}
+.neon-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--cyan), var(--magenta), transparent);
+    opacity: 0;
+    transition: opacity 0.4s var(--ease-out-expo);
+}
+.neon-card:hover::before {
+    opacity: 1;
+}
+.neon-card:hover {
+    border-color: var(--cyan);
+    transform: translateY(-4px);
+    box-shadow: var(--glow-cyan);
+}
+
+/* Tag badges */
+.tag {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    font-size: var(--small-size);
+    font-weight: 500;
+    border-radius: 2px;
+    letter-spacing: 0.05em;
+}
+.tag-cyan { background: rgba(0, 240, 255, 0.1); color: var(--cyan); border: 1px solid rgba(0, 240, 255, 0.2); }
+.tag-magenta { background: rgba(255, 0, 128, 0.1); color: var(--magenta); border: 1px solid rgba(255, 0, 128, 0.2); }
+
+/* ===========================================
+   REVEAL ANIMATIONS
+   =========================================== */
+.reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.7s var(--ease-out-expo),
+                transform 0.7s var(--ease-out-expo);
+}
+.reveal-left {
+    opacity: 0;
+    transform: translateX(-40px);
+    transition: opacity 0.7s var(--ease-out-expo),
+                transform 0.7s var(--ease-out-expo);
+}
+.reveal-right {
+    opacity: 0;
+    transform: translateX(40px);
+    transition: opacity 0.7s var(--ease-out-expo),
+                transform 0.7s var(--ease-out-expo);
+}
+.reveal-scale {
+    opacity: 0;
+    transform: scale(0.8);
+    transition: opacity 0.7s var(--ease-out-expo),
+                transform 0.7s var(--ease-out-expo);
+}
+.reveal-blur {
+    opacity: 0;
+    filter: blur(10px);
+    transition: opacity 0.9s var(--ease-out-expo),
+                filter 0.9s var(--ease-out-expo);
+}
+.reveal-stagger > * {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s var(--ease-out-expo),
+                transform 0.5s var(--ease-out-expo);
+}
+.visible .reveal,
+.visible .reveal-left,
+.visible .reveal-right,
+.visible .reveal-scale,
+.visible .reveal-blur,
+.visible .reveal-stagger > * {
+    opacity: 1;
+    transform: translate(0) scale(1);
+    filter: blur(0);
+}
+.visible .reveal-stagger > *:nth-child(1) { transition-delay: 0.05s; }
+.visible .reveal-stagger > *:nth-child(2) { transition-delay: 0.1s; }
+.visible .reveal-stagger > *:nth-child(3) { transition-delay: 0.15s; }
+.visible .reveal-stagger > *:nth-child(4) { transition-delay: 0.2s; }
+.visible .reveal-stagger > *:nth-child(5) { transition-delay: 0.25s; }
+.visible .reveal-stagger > *:nth-child(6) { transition-delay: 0.3s; }
+.visible .reveal-stagger > *:nth-child(7) { transition-delay: 0.35s; }
+.visible .reveal-stagger > *:nth-child(8) { transition-delay: 0.4s; }
+.visible .reveal-stagger > *:nth-child(9) { transition-delay: 0.45s; }
+.visible .reveal-stagger > *:nth-child(10) { transition-delay: 0.5s; }
+
+/* ===========================================
+   SLIDE-SPECIFIC STYLES
+   =========================================== */
+
+/* Title slide */
+.slide-title {
+    text-align: center;
+    align-items: center;
+}
+.slide-title .logo-icon {
+    font-size: clamp(2rem, 6vw, 5rem);
+    margin-bottom: 0.5rem;
+    display: block;
+}
+.slide-title h1 {
+    background: linear-gradient(135deg, var(--cyan), var(--magenta));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+.slide-title .tagline {
+    font-size: var(--h3-size);
+    color: var(--text-secondary);
+    margin-top: 1rem;
+    font-weight: 300;
+    letter-spacing: 0.1em;
+}
+.slide-title .meta {
+    margin-top: 2rem;
+    font-size: var(--small-size);
+    color: var(--text-muted);
+    letter-spacing: 0.15em;
+}
+
+/* Slide number */
+.slide-number {
+    position: absolute;
+    bottom: clamp(0.5rem, 2vw, 2rem);
+    right: clamp(0.5rem, 2vw, 2rem);
+    z-index: 10;
+    font-size: var(--small-size);
+    color: var(--text-muted);
+    font-weight: 500;
+    letter-spacing: 0.1em;
+}
+
+/* Feature grid */
+.feature-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: clamp(0.5rem, 1.5vw, 1.5rem);
+    margin-top: var(--content-gap);
+}
+.feature-grid.features-4 { grid-template-columns: repeat(2, 1fr); }
+.feature-grid.features-6 { grid-template-columns: repeat(3, 1fr); }
+@media (max-width: 768px) {
+    .feature-grid,
+    .feature-grid.features-4,
+    .feature-grid.features-6 { grid-template-columns: 1fr; }
+}
+
+.feature-icon {
+    font-size: clamp(1.2rem, 2.5vw, 2rem);
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+/* Architecture flow */
+.arch-flow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(0.3rem, 1vw, 1rem);
+    flex-wrap: wrap;
+    margin-top: var(--content-gap);
+}
+.arch-node {
+    padding: clamp(0.4rem, 1vw, 0.8rem) clamp(0.8rem, 1.5vw, 1.5rem);
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    font-size: var(--small-size);
+    font-weight: 500;
+    text-align: center;
+    transition: all 0.3s var(--ease-out-expo);
+}
+.arch-node:hover {
+    border-color: var(--magenta);
+    box-shadow: var(--glow-magenta);
+}
+.arch-arrow {
+    color: var(--text-muted);
+    font-size: var(--body-size);
+    font-weight: 300;
+}
+
+/* Tech stack pills */
+.tech-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: clamp(0.3rem, 0.8vw, 0.6rem);
+    justify-content: center;
+    margin-top: var(--content-gap);
+}
+.tech-pill {
+    padding: clamp(0.25rem, 0.6vw, 0.5rem) clamp(0.6rem, 1.2vw, 1.2rem);
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    font-size: var(--small-size);
+    font-family: 'Space Grotesk', sans-serif;
+    color: var(--text-secondary);
+    transition: all 0.3s var(--ease-out-expo);
+    cursor: default;
+}
+.tech-pill:hover {
+    border-color: var(--cyan);
+    color: var(--cyan);
+    box-shadow: var(--glow-cyan);
+    transform: translateY(-2px);
+}
+
+/* Stats row */
+.stats-row {
+    display: flex;
+    gap: clamp(1rem, 3vw, 3rem);
+    justify-content: center;
+    margin-top: var(--content-gap);
+}
+.stat-item { text-align: center; }
+.stat-number {
+    font-family: 'Archivo', sans-serif;
+    font-size: clamp(1.5rem, 4vw, 3rem);
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--cyan), var(--magenta));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+.stat-label {
+    font-size: var(--small-size);
+    color: var(--text-secondary);
+    margin-top: 0.2rem;
+}
+
+/* Scramble text effect */
+.scramble-text {
+    display: inline-block;
+    position: relative;
+}
+
+/* Scan line effect on certain slides */
+.scanlines::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,240,255,0.015) 2px, rgba(0,240,255,0.015) 4px);
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* Phase badges */
+.phase-badge {
+    display: inline-block;
+    padding: 0.2rem 0.8rem;
+    font-size: var(--small-size);
+    font-weight: 600;
+    border: 1px solid;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.5rem;
+}
+
+/* ===========================================
+   NAVIGATION
+   =========================================== */
+.nav-arrows {
+    position: fixed;
+    bottom: clamp(0.5rem, 2vw, 2rem);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+.nav-btn {
+    width: 36px;
+    height: 36px;
+    border: 1px solid var(--card-border);
+    background: var(--card-bg);
+    color: var(--text-secondary);
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(12px);
+    transition: all 0.3s var(--ease-out-expo);
+}
+.nav-btn:hover {
+    border-color: var(--cyan);
+    color: var(--cyan);
+    box-shadow: var(--glow-cyan);
+}
+.nav-dots {
+    display: flex;
+    gap: 0.4rem;
+}
+.nav-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--text-muted);
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    transition: all 0.3s var(--ease-out-expo);
+}
+.nav-dot.active {
+    background: var(--cyan);
+    box-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+    width: 24px;
+    border-radius: 4px;
+}
+.nav-dot:hover {
+    background: var(--text-secondary);
+}
+
+/* Keyboard hint */
+.keyboard-hint {
+    position: fixed;
+    bottom: clamp(0.5rem, 2vw, 2rem);
+    right: clamp(0.5rem, 2vw, 2rem);
+    z-index: 100;
+    display: flex;
+    gap: 0.3rem;
+    align-items: center;
+    font-size: var(--small-size);
+    color: var(--text-muted);
+}
+.keyboard-hint kbd {
+    padding: 0.1rem 0.4rem;
+    border: 1px solid var(--card-border);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: var(--small-size);
+}
+
+/* ===========================================
+   RESPONSIVE ADJUSTMENTS
+   =========================================== */
+@media (max-height: 700px) {
+    :root {
+        --slide-padding: clamp(0.75rem, 3vw, 2rem);
+        --content-gap: clamp(0.4rem, 1.5vw, 1rem);
+        --title-size: clamp(1.25rem, 4.5vw, 2.5rem);
+        --h2-size: clamp(1rem, 3vw, 1.75rem);
+    }
+}
+@media (max-height: 600px) {
+    :root {
+        --slide-padding: clamp(0.5rem, 2.5vw, 1.5rem);
+        --content-gap: clamp(0.3rem, 1vw, 0.75rem);
+        --title-size: clamp(1.1rem, 4vw, 2rem);
+        --body-size: clamp(0.7rem, 1.2vw, 0.95rem);
+    }
+    .nav-dots, .keyboard-hint { display: none; }
+}
+@media (max-width: 600px) {
+    :root { --title-size: clamp(1.25rem, 7vw, 2.5rem); }
+}
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.2s !important;
+    }
+    html { scroll-behavior: auto; }
+    .gradient-mesh::before, .gradient-mesh::after { animation: none !important; }
+}
+</style>
+</head>
+<body>
+
+<canvas id="particle-canvas"></canvas>
+
+<!-- ============================================
+     SLIDE 1 — TITLE
+     ============================================ -->
+<section class="slide slide-title grid-bg" data-index="0">
+    <div class="gradient-mesh"></div>
+    <div class="slide-accent"></div>
+    <div class="slide-content">
+        <div class="reveal">
+            <span class="logo-icon">✦</span>
+        </div>
+        <h1 class="reveal" style="transition-delay:0.1s">Nexus AI<br>Workspace</h1>
+        <p class="tagline reveal" style="transition-delay:0.2s">Your AI-Powered Productivity Hub</p>
+        <p class="meta reveal" style="transition-delay:0.3s">Next.js 15 · Supabase · OpenRouter · tldraw</p>
+        <div class="reveal" style="transition-delay:0.4s; margin-top: 2rem;">
+            <span class="tag tag-cyan">✦ MODERN FULL-STACK</span>
+            <span class="tag tag-magenta" style="margin-left:0.5rem">✦ AI-NATIVE</span>
+        </div>
+    </div>
+    <div class="slide-number">01 / 11</div>
+</section>
+
+<!-- ============================================
+     SLIDE 2 — WHAT IS NEXUS?
+     ============================================ -->
+<section class="slide grid-bg" data-index="1">
+    <div class="gradient-mesh"></div>
+    <div class="slide-accent"></div>
+    <div class="slide-content">
+        <span class="tag tag-cyan reveal" style="width:fit-content">OVERVIEW</span>
+        <h2 class="reveal" style="transition-delay:0.05s; margin-top:0.5rem">One workspace to<br><span class="neon-text-cyan">unify your workflow</span></h2>
+        <p class="reveal" style="transition-delay:0.1s; margin-top:0.5rem; max-width: 680px">
+            Nexus AI combines project management, documentation, AI chat, real-time collaboration, and GitHub integration into a single, beautiful interface.
+        </p>
+        <div class="stats-row">
+            <div class="stat-item reveal" style="transition-delay:0.15s">
+                <div class="stat-number">10+</div>
+                <div class="stat-label">Integrated Tools</div>
+            </div>
+            <div class="stat-item reveal" style="transition-delay:0.2s">
+                <div class="stat-number">100%</div>
+                <div class="stat-label">Free &amp; Open</div>
+            </div>
+            <div class="stat-item reveal" style="transition-delay:0.25s">
+                <div class="stat-number">Real-time</div>
+                <div class="stat-label">Collaboration</div>
+            </div>
+        </div>
+        <div class="feature-grid features-3" style="margin-top:1.5rem">
+            <div class="neon-card reveal" style="transition-delay:0.2s">
+                <span class="feature-icon">🤖</span>
+                <h3>AI Native</h3>
+                <p>OpenRouter-powered chat, PDF analysis, and smart search</p>
+            </div>
+            <div class="neon-card reveal" style="transition-delay:0.25s">
+                <span class="feature-icon">⚡</span>
+                <h3>Real-time Sync</h3>
+                <p>Supabase Realtime keeps your team in sync instantly</p>
+            </div>
+            <div class="neon-card reveal" style="transition-delay:0.3s">
+                <span class="feature-icon">🔗</span>
+                <h3>GitHub Native</h3>
+                <p>Browse repos, issues, and PRs without leaving your flow</p>
+            </div>
+        </div>
+    </div>
+    <div class="slide-number">02 / 11</div>
+</section>
+
+<!-- ============================================
+     SLIDE 3 — FEATURES GRID
+     ============================================ -->
+<section class="slide grid-bg" data-index="2">
+    <div class="gradient-mesh"></div>
+    <div class="slide-accent"></div>
+    <div class="slide-content">
+        <span class="tag tag-magenta reveal" style="width:fit-content">FEATURES</span>
+        <h2 class="reveal" style="transition-delay:0.05s; margin-top:0.5rem">Everything you need<br><span class="neon-text-magenta">in one place</span></h2>
+        <div class="feature-grid features-6" style="margin-top:1rem">
+            <div class="neon-card reveal" style="transition-delay:0.1s">
+                <span class="feature-icon">📝</span>
+                <h3>Notes</h3>
+                <p>Markdown editor with autosave and live preview</p>
+            </div>
+            <div class="neon-card reveal" style="transition-delay:0.13s">
+                <span class="feature-icon">📋</span>
+                <h3>Kanban</h3>
+                <p>Drag-and-drop boards with real-time sync</p>
+            </div>
+            <div class="neon-card reveal" style="transition-delay:0.16s">
+                <span class="feature-icon">📅</span>
+                <h3>Calendar</h3>
+                <p>FullCalendar with week, month, and day views</p>
+            </div>
+            <div class="neon-card reveal" style="transition-delay:0.19s">
+                <span class="feature-icon">🎨</span>
+                <h3>Whiteboard</h3>
+                <p>tldraw-powered infinite canvas</p>
+            </div>
+            <div class="neon-card reveal" style="transition-delay:0.22s">
+                <span class="feature-icon">💬</span>
+                <h3>AI Chat</h3>
+                <p>Chat with GPT, Claude, Gemini via OpenRouter</p>
+            </div>
+            <div class="neon-card reveal" style="transition-delay:0.25s">
+                <span class="feature-icon">🔍</span>
+                <h3>Global Search</h3>
+                <p>PostgreSQL full-text search across everything</p>
+            </div>
+        </div>
+    </div>
+    <div class="slide-number">03 / 11</div>
+</section>
+
+<!-- ============================================
+     SLIDE 4 — AI CHAT
+     ============================================ -->
+<section class="slide grid-bg" data-index="3">
+    <div class="gradient-mesh"></div>
+    <div class="slide-accent"></div>
+    <div class="slide-content">
+        <span class="tag tag-cyan reveal" style="width:fit-content">FEATURE DEEP DIVE</span>
+        <h2 class="reveal" style="transition-delay:0.05s; margin-top:0.5rem">AI Chat <span class="neon-text-cyan">Assistant</span></h2>
+        <p class="reveal" style="transition-delay:0.1s; max-width: 600px">
+            Powered by OpenRouter with automatic model fallback. Chat with your documents, search your workspace, and get answers instantly.
+        </p>
+        <div style="display:flex; gap:clamp(0.5rem,1.5vw,1.5rem); margin-top:1rem; flex-wrap:wrap">
+            <div class="neon-card reveal" style="transition-delay:0.15s; flex:1; min-width:200px">
+                <span class="feature-icon">🔄</span>
+                <h3>Model Fallback</h3>
+                <p>GPT-3.5 → GPT-4o → Claude → Gemini — always available</p>
+            </div>
+            <div class="neon-card reveal" style="transition-delay:0.2s; flex:1; min-width:200px">
+                <span class="feature-icon">📄</span>
+                <h3>Chat with PDF</h3>
+                <p>Upload documents and ask questions about their content</p>
+            </div>
+            <div class="neon-card reveal" style="transition-delay:0.25s; flex:1; min-width:200px">
+                <span class="feature-icon">🧠</span>
+                <h3>Context Aware</h3>
+                <p>AI understands your workspace, projects, and tasks</p>
+            </div>
+        </div>
+        <div class="reveal" style="transition-delay:0.3s; margin-top:1.5rem">
+            <span class="tag tag-cyan">openai/gpt-3.5-turbo</span>
+            <span class="tag tag-magenta" style="margin-left:0.4rem">openai/gpt-4o-mini</span>
+            <span class="tag tag-cyan" style="margin-left:0.4rem">claude-3-haiku</span>
+            <span class="tag tag-magenta" style="margin-left:0.4rem">gemini-2.0-flash</span>
+        </div>
+    </div>
+    <div class="slide-number">04 / 11</div>
+</section>
+
+<!-- ============================================
+     SLIDE 5 — KANBAN + CALENDAR
+     ============================================ -->
+<section class="slide grid-bg" data-index="4">
+    <div class="gradient-mesh"></div>
+    <div class="slide-accent"></div>
+    <div class="slide-content">
+        <span class="tag tag-magenta reveal" style="width:fit-content">PROJECT MANAGEMENT</span>
+        <h2 class="reveal" style="transition-delay:0.05s; margin-top:0.5rem">Kanban &amp; <span class="neon-text-magenta">Calendar</span></h2>
+        <div style="display:flex; gap:clamp(0.5rem,1.5vw,1.5rem); margin-top:1rem; flex-wrap:wrap">
+            <div class="neon-card reveal" style="transition-delay:0.1s; flex:1; min-width:220px">
+                <span class="feature-icon" style="font-size:clamp(1.5rem,3vw,2.5rem)">📋</span>
+                <h3>Drag &amp; Drop Kanban</h3>
+                <p>4 columns (Backlog → Todo → In Progress → Done) with @dnd-kit. Drag tasks between columns — instantly persisted to Supabase.</p>
+                <div style="margin-top:0.8rem; display:flex; gap:0.3rem; flex-wrap:wrap">
+                    <span class="tag tag-cyan" style="font-size:clamp(0.55rem,0.8vw,0.75rem)">Priority badges</span>
+                    <span class="tag tag-magenta" style="font-size:clamp(0.55rem,0.8vw,0.75rem)">Due dates</span>
+                    <span class="tag tag-cyan" style="font-size:clamp(0.55rem,0.8vw,0.75rem)">Assignees</span>
+                </div>
+            </div>
+            <div class="neon-card reveal" style="transition-delay:0.15s; flex:1; min-width:220px">
+                <span class="feature-icon" style="font-size:clamp(1.5rem,3vw,2.5rem)">📅</span>
+                <h3>Interactive Calendar</h3>
+                <p>FullCalendar with month, week, and day views. Click to create events, drag to reschedule. All synced in real-time.</p>
+                <div style="margin-top:0.8rem; display:flex; gap:0.3rem; flex-wrap:wrap">
+                    <span class="tag tag-magenta" style="font-size:clamp(0.55rem,0.8vw,0.75rem)">CRUD events</span>
+                    <span class="tag tag-cyan" style="font-size:clamp(0.55rem,0.8vw,0.75rem)">All-day support</span>
+                    <span class="tag tag-magenta" style="font-size:clamp(0.55rem,0.8vw,0.75rem)">Dark mode</span>
+                </div>
+            </div>
+        </div>
+        <div class="reveal" style="transition-delay:0.2s; margin-top:1rem; display:flex; gap:0.5rem; flex-wrap:wrap">
+            <span class="tech-pill">@dnd-kit/core</span>
+            <span class="tech-pill">@dnd-kit/sortable</span>
+            <span class="tech-pill">@fullcalendar/core</span>
+            <span class="tech-pill">date-fns</span>
+        </div>
+    </div>
+    <div class="slide-number">05 / 11</div>
+</section>
+
+<!-- ============================================
+     SLIDE 6 — NOTES + WHITEBOARD
+     ============================================ -->
+<section class="slide grid-bg" data-index="5">
+    <div class="gradient-mesh"></div>
+    <div class="slide-accent"></div>
+    <div class="slide-content">
+        <span class="tag tag-cyan reveal" style="width:fit-content">CREATIVITY</span>
+        <h2 class="reveal" style="transition-delay:0.05s; margin-top:0.5rem">Notes &amp; <span class="neon-text-cyan">Whiteboard</span></h2>
+        <div style="display:flex; gap:clamp(0.5rem,1.5vw,1.5rem); margin-top:1rem; flex-wrap:wrap">
+            <div class="neon-card reveal" style="transition-delay:0.1s; flex:1; min-width:200px">
+                <span class="feature-icon" style="font-size:clamp(1.5rem,3vw,2.5rem)">📝</span>
+                <h3>Markdown Notes</h3>
+                <p>Rich markdown editor with toolbar, live preview toggle, and 2-second debounce autosave. Never lose a thought.</p>
+                <div style="margin-top:0.6rem">
+                    <span class="tag tag-cyan">react-markdown</span>
+                    <span class="tag tag-magenta" style="margin-left:0.3rem">remark-gfm</span>
+                </div>
+            </div>
+            <div class="neon-card reveal" style="transition-delay:0.15s; flex:1; min-width:200px">
+                <span class="feature-icon" style="font-size:clamp(1.5rem,3vw,2.5rem)">🎨</span>
+                <h3>Interactive Whiteboard</h3>
+                <p>tldraw-powered infinite canvas with shapes, drawings, and text. Auto-saves snapshots to Supabase.</p>
+                <div style="margin-top:0.6rem">
+                    <span class="tag tag-magenta">tldraw</span>
+                    <span class="tag tag-cyan" style="margin-left:0.3rem">Auto-save</span>
+                </div>
+            </div>
+        </div>
+        <div class="reveal reveal-blur" style="transition-delay:0.2s; margin-top:1rem; padding:clamp(0.5rem,1vw,1rem); background:var(--card-bg); border:1px solid var(--card-border); text-align:center">
+            <span style="font-size:var(--small-size); color:var(--text-muted); letter-spacing:0.05em">
+                ✦ Both features support dark mode, real-time sync, and full search indexing ✦
+            </span>
+        </div>
+    </div>
+    <div class="slide-number">06 / 11</div>
+</section>
+
+<!-- ============================================
+     SLIDE 7 — GITHUB + SEARCH
+     ============================================ -->
+<section class="slide grid-bg" data-index="6">
+    <div class="gradient-mesh"></div>
+    <div class="slide-accent"></div>
+    <div class="slide-content">
+        <span class="tag tag-magenta reveal" style="width:fit-content">DEVELOPER TOOLS</span>
+        <h2 class="reveal" style="transition-delay:0.05s; margin-top:0.5rem">GitHub &amp; <span class="neon-text-magenta">Global Search</span></h2>
+        <div style="display:flex; gap:clamp(0.5rem,1.5vw,1.5rem); margin-top:1rem; flex-wrap:wrap">
+            <div class="neon-card reveal" style="transition-delay:0.1s; flex:1; min-width:200px">
+                <span class="feature-icon" style="font-size:clamp(1.5rem,3vw,2.5rem)">🐙</span>
+                <h3>GitHub Integration</h3>
+                <p>OAuth-powered access to your repos, issues, and pull requests. Filter by language, search repos, browse PRs — all inside Nexus.</p>
+                <div style="margin-top:0.6rem; display:flex; gap:0.3rem; flex-wrap:wrap">
+                    <span class="tag tag-cyan" style="font-size:clamp(0.55rem,0.8vw,0.75rem)">GitHub REST API v3</span>
+                    <span class="tag tag-magenta" style="font-size:clamp(0.55rem,0.8vw,0.75rem)">OAuth</span>
+                    <span class="tag tag-cyan" style="font-size:clamp(0.55rem,0.8vw,0.75rem)">Rate-limit aware</span>
+                </div>
+            </div>
+            <div class="neon-card reveal" style="transition-delay:0.15s; flex:1; min-width:200px">
+                <span class="feature-icon" style="font-size:clamp(1.5rem,3vw,2.5rem)">🔍</span>
+                <h3>Global Search</h3>
+                <p>PostgreSQL full-text search across notes, projects, tasks, and files. Debounced input with grouped results and highlighted matches.</p>
+                <div style="margin-top:0.6rem; display:flex; gap:0.3rem; flex-wrap:wrap">
+                    <span class="tag tag-magenta" style="font-size:clamp(0.55rem,0.8vw,0.75rem)">pg_trgm</span>
+                    <span class="tag tag-cyan" style="font-size:clamp(0.55rem,0.8vw,0.75rem)">to_tsvector</span>
+                    <span class="tag tag-magenta" style="font-size:clamp(0.55rem,0.8vw,0.75rem)">ilike</span>
+                </div>
+            </div>
+        </div>
+        <div class="reveal" style="transition-delay:0.2s; margin-top:1rem">
+            <div class="neon-card" style="display:flex; align-items:center; gap:1rem; padding:clamp(0.5rem,1vw,1rem); flex-wrap:wrap">
+                <span style="font-size:var(--h3-size); font-weight:700">⌘K</span>
+                <span style="font-size:var(--body-size); color:var(--text-secondary)">Command palette — navigate anywhere instantly</span>
+                <span class="tag tag-cyan" style="margin-left:auto">shadcn/ui command</span>
+            </div>
+        </div>
+    </div>
+    <div class="slide-number">07 / 11</div>
+</section>
+
+<!-- ============================================
+     SLIDE 8 — TECH STACK
+     ============================================ -->
+<section class="slide grid-bg" data-index="7">
+    <div class="gradient-mesh"></div>
+    <div class="slide-accent"></div>
+    <div class="slide-content">
+        <span class="tag tag-cyan reveal" style="width:fit-content">TECH STACK</span>
+        <h2 class="reveal" style="transition-delay:0.05s; margin-top:0.5rem">100% <span class="neon-text-cyan">Free</span> &amp; Modern</h2>
+        <div class="tech-pills" style="margin-top:0.8rem">
+            <span class="tech-pill reveal" style="transition-delay:0.08s">Next.js 15</span>
+            <span class="tech-pill reveal" style="transition-delay:0.1s">TypeScript</span>
+            <span class="tech-pill reveal" style="transition-delay:0.12s">Tailwind CSS</span>
+            <span class="tech-pill reveal" style="transition-delay:0.14s">shadcn/ui</span>
+            <span class="tech-pill reveal" style="transition-delay:0.16s">Supabase</span>
+            <span class="tech-pill reveal" style="transition-delay:0.18s">PostgreSQL</span>
+            <span class="tech-pill reveal" style="transition-delay:0.2s">OpenRouter</span>
+            <span class="tech-pill reveal" style="transition-delay:0.22s">tldraw</span>
+            <span class="tech-pill reveal" style="transition-delay:0.24s">Framer Motion</span>
+            <span class="tech-pill reveal" style="transition-delay:0.26s">Zustand</span>
+            <span class="tech-pill reveal" style="transition-delay:0.28s">React Hook Form</span>
+            <span class="tech-pill reveal" style="transition-delay:0.3s">Zod</span>
+            <span class="tech-pill reveal" style="transition-delay:0.32s">FullCalendar</span>
+            <span class="tech-pill reveal" style="transition-delay:0.34s">@dnd-kit</span>
+            <span class="tech-pill reveal" style="transition-delay:0.36s">Lucide</span>
+            <span class="tech-pill reveal" style="transition-delay:0.38s">Vercel</span>
+        </div>
+        <div class="reveal" style="transition-delay:0.4s; margin-top:1rem; text-align:center">
+            <p style="color:var(--text-muted); font-size:var(--small-size)">
+                ✦ Every component carefully chosen for the free tier ✦<br>
+                Supabase Free + Vercel Hobby + OpenRouter free models
+            </p>
+        </div>
+    </div>
+    <div class="slide-number">08 / 11</div>
+</section>
+
+<!-- ============================================
+     SLIDE 9 — ARCHITECTURE
+     ============================================ -->
+<section class="slide grid-bg" data-index="8">
+    <div class="gradient-mesh"></div>
+    <div class="slide-accent"></div>
+    <div class="slide-content">
+        <span class="tag tag-magenta reveal" style="width:fit-content">ARCHITECTURE</span>
+        <h2 class="reveal" style="transition-delay:0.05s; margin-top:0.5rem">How it <span class="neon-text-magenta">works</span></h2>
+        <div class="arch-flow">
+            <div class="arch-node reveal" style="transition-delay:0.1s">Browser<br><span style="color:var(--text-muted);font-size:clamp(0.55rem,0.8vw,0.75rem)">Next.js 15</span></div>
+            <span class="arch-arrow reveal" style="transition-delay:0.12s">→</span>
+            <div class="arch-node reveal" style="transition-delay:0.14s">Server Actions<br><span style="color:var(--text-muted);font-size:clamp(0.55rem,0.8vw,0.75rem)">API Routes</span></div>
+            <span class="arch-arrow reveal" style="transition-delay:0.16s">↕</span>
+            <div class="arch-node reveal" style="transition-delay:0.18s" style="border-color:var(--cyan)">Supabase<br><span style="color:var(--text-muted);font-size:clamp(0.55rem,0.8vw,0.75rem)">Auth · DB · Realtime · Storage</span></div>
+            <span class="arch-arrow reveal" style="transition-delay:0.2s">↕</span>
+            <div class="arch-node reveal" style="transition-delay:0.22s" style="border-color:var(--magenta)">OpenRouter<br><span style="color:var(--text-muted);font-size:clamp(0.55rem,0.8vw,0.75rem)">AI Models</span></div>
+            <span class="arch-arrow reveal" style="transition-delay:0.24s">↕</span>
+            <div class="arch-node reveal" style="transition-delay:0.26s">GitHub API<br><span style="color:var(--text-muted);font-size:clamp(0.55rem,0.8vw,0.75rem)">OAuth · REST</span></div>
+        </div>
+        <div class="reveal" style="transition-delay:0.3s; margin-top:1.5rem">
+            <div style="display:flex; gap:0.5rem; justify-content:center; flex-wrap:wrap">
+                <span class="tag tag-cyan">Row Level Security</span>
+                <span class="tag tag-magenta">Server Components</span>
+                <span class="tag tag-cyan">RLS Policies</span>
+                <span class="tag tag-magenta">Middleware Proxy</span>
+            </div>
+        </div>
+    </div>
+    <div class="slide-number">09 / 11</div>
+</section>
+
+<!-- ============================================
+     SLIDE 10 — UI SHOWCASE
+     ============================================ -->
+<section class="slide grid-bg" data-index="9">
+    <div class="gradient-mesh"></div>
+    <div class="slide-accent"></div>
+    <div class="slide-content">
+        <span class="tag tag-cyan reveal" style="width:fit-content">DESIGN</span>
+        <h2 class="reveal" style="transition-delay:0.05s; margin-top:0.5rem">Glassmorphism &amp;<br><span class="neon-text-cyan">Dark Mode</span></h2>
+        <p class="reveal" style="transition-delay:0.1s; max-width:600px">
+            A bento-grid dashboard with floating glass panels, smooth animations, and a dark-first design aesthetic.
+        </p>
+        <div class="feature-grid features-4" style="margin-top:0.8rem">
+            <div class="neon-card reveal" style="transition-delay:0.12s; text-align:center">
+                <span style="font-size:clamp(1.2rem,2vw,1.8rem)">🪟</span>
+                <h3>Glass panels</h3>
+                <p>backdrop-filter blur</p>
+            </div>
+            <div class="neon-card reveal" style="transition-delay:0.16s; text-align:center">
+                <span style="font-size:clamp(1.2rem,2vw,1.8rem)">🌓</span>
+                <h3>Dark mode</h3>
+                <p>next-themes toggle</p>
+            </div>
+            <div class="neon-card reveal" style="transition-delay:0.2s; text-align:center">
+                <span style="font-size:clamp(1.2rem,2vw,1.8rem)">✨</span>
+                <h3>Animations</h3>
+                <p>Framer Motion</p>
+            </div>
+            <div class="neon-card reveal" style="transition-delay:0.24s; text-align:center">
+                <span style="font-size:clamp(1.2rem,2vw,1.8rem)">🎯</span>
+                <h3>Responsive</h3>
+                <p>Mobile-first bento</p>
+            </div>
+        </div>
+        <div class="reveal" style="transition-delay:0.3s; margin-top:1rem">
+            <div class="neon-card" style="display:flex; gap:1rem; justify-content:center; padding:clamp(0.5rem,1vw,1rem); flex-wrap:wrap">
+                <span style="color:var(--cyan)">■</span>
+                <span style="color:var(--magenta)">■</span>
+                <span style="color:rgba(0,240,255,0.3)">■</span>
+                <span style="color:rgba(255,0,128,0.3)">■</span>
+                <span style="font-size:var(--small-size); color:var(--text-muted)">Neon Cyber palette ● Midnight navy base</span>
+            </div>
+        </div>
+    </div>
+    <div class="slide-number">10 / 11</div>
+</section>
+
+<!-- ============================================
+     SLIDE 11 — CLOSING
+     ============================================ -->
+<section class="slide slide-title grid-bg" data-index="10">
+    <div class="gradient-mesh"></div>
+    <div class="slide-accent"></div>
+    <div class="slide-content">
+        <div class="reveal-blur" style="margin-bottom:1rem">
+            <span style="font-size:clamp(2rem,5vw,4rem)">✦</span>
+        </div>
+        <h2 class="reveal" style="transition-delay:0.1s">Ready to build<br><span class="neon-text-magenta">your workspace?</span></h2>
+        <p class="reveal" style="transition-delay:0.15s; margin-top:1rem; max-width:500px">
+            Nexus AI Workspace is built with Next.js 15, Supabase, and OpenRouter. Full source available — deploy on Vercel for free.
+        </p>
+        <div class="reveal" style="transition-delay:0.2s; margin-top:1.5rem">
+            <a class="neon-button" href="http://localhost:5000" target="_blank">
+                Open Nexus AI →
+            </a>
+        </div>
+        <div class="reveal" style="transition-delay:0.25s; margin-top:2rem">
+            <p style="font-size:var(--small-size); color:var(--text-muted); letter-spacing:0.1em">
+                NEXT.JS 15 · SUPABASE · OPENROUTER · TL DRAW · FARMER MOTION
+            </p>
+        </div>
+    </div>
+    <div class="slide-number">11 / 11</div>
+</section>
+
+<!-- ============================================
+     NAVIGATION
+     ============================================ -->
+<div class="nav-arrows">
+    <button class="nav-btn" id="prevSlide" aria-label="Previous slide">←</button>
+    <div class="nav-dots" id="navDots"></div>
+    <button class="nav-btn" id="nextSlide" aria-label="Next slide">→</button>
+</div>
+<div class="keyboard-hint">
+    <kbd>←</kbd> <kbd>→</kbd> <span>or</span> <kbd>Space</kbd>
+</div>
+
+<script>
+// ============================================
+// PARTICLE BACKGROUND
+// ============================================
+(function() {
+    const canvas = document.getElementById('particle-canvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+    let animFrame;
+
+    function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    class Particle {
+        constructor() { this.reset(); }
+        reset() {
+            this.x = Math.random() * canvas.width;
+            this.y = Math.random() * canvas.height;
+            this.size = Math.random() * 1.5 + 0.5;
+            this.speedX = (Math.random() - 0.5) * 0.5;
+            this.speedY = (Math.random() - 0.5) * 0.5;
+            this.opacity = Math.random() * 0.5 + 0.1;
+            this.hue = Math.random() > 0.5 ? 185 : 330; // cyan or magenta
+        }
+        update() {
+            this.x += this.speedX;
+            this.y += this.speedY;
+            if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+            if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+        }
+        draw() {
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            const color = this.hue === 185 ? '0, 240, 255' : '255, 0, 128';
+            ctx.fillStyle = `rgba(${color}, ${this.opacity})`;
+            ctx.fill();
+        }
+    }
+
+    const count = Math.min(80, Math.floor((canvas.width * canvas.height) / 15000));
+    for (let i = 0; i < count; i++) particles.push(new Particle());
+
+    // Connection lines
+    function drawConnections() {
+        for (let i = 0; i < particles.length; i++) {
+            for (let j = i + 1; j < particles.length; j++) {
+                const dx = particles[i].x - particles[j].x;
+                const dy = particles[i].y - particles[j].y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist < 150) {
+                    const opacity = (1 - dist / 150) * 0.12;
+                    ctx.beginPath();
+                    ctx.moveTo(particles[i].x, particles[i].y);
+                    ctx.lineTo(particles[j].x, particles[j].y);
+                    ctx.strokeStyle = `rgba(0, 240, 255, ${opacity})`;
+                    ctx.lineWidth = 0.5;
+                    ctx.stroke();
+                }
+            }
+        }
+    }
+
+    function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        particles.forEach(p => { p.update(); p.draw(); });
+        drawConnections();
+        animFrame = requestAnimationFrame(animate);
+    }
+    animate();
+
+    window.addEventListener('resize', () => {
+        resize();
+        const newCount = Math.min(80, Math.floor((canvas.width * canvas.height) / 15000));
+        if (newCount > particles.length) {
+            while (particles.length < newCount) particles.push(new Particle());
+        }
+    });
+})();
+
+// ============================================
+// PRESENTATION CONTROLLER
+// ============================================
+(function() {
+    const slides = document.querySelectorAll('.slide');
+    const totalSlides = slides.length;
+    const navDots = document.getElementById('navDots');
+    let currentIndex = 0;
+    let isScrolling = false;
+
+    // Build dots
+    for (let i = 0; i < totalSlides; i++) {
+        const dot = document.createElement('button');
+        dot.className = 'nav-dot' + (i === 0 ? ' active' : '');
+        dot.setAttribute('aria-label', `Go to slide ${i + 1}`);
+        dot.dataset.index = i;
+        dot.addEventListener('click', () => goToSlide(i));
+        navDots.appendChild(dot);
+    }
+
+    function updateDots() {
+        document.querySelectorAll('.nav-dot').forEach((dot, i) => {
+            dot.classList.toggle('active', i === currentIndex);
+        });
+    }
+
+    function goToSlide(index) {
+        if (index < 0 || index >= totalSlides || isScrolling) return;
+        isScrolling = true;
+        currentIndex = index;
+        slides[index].scrollIntoView({ behavior: 'smooth' });
+        updateDots();
+        setTimeout(() => { isScrolling = false; }, 800);
+    }
+
+    // Intersection Observer for reveal animations
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                const idx = parseInt(entry.target.dataset.index);
+                if (!isNaN(idx)) {
+                    currentIndex = idx;
+                    updateDots();
+                }
+            }
+        });
+    }, { threshold: 0.3 });
+
+    slides.forEach(slide => {
+        observer.observe(slide);
+        // Pre-mark first as visible
+        if (parseInt(slide.dataset.index) === 0) slide.classList.add('visible');
+    });
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') {
+            e.preventDefault();
+            goToSlide(currentIndex + 1);
+        } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+            e.preventDefault();
+            goToSlide(currentIndex - 1);
+        } else if (e.key === 'Home') {
+            e.preventDefault();
+            goToSlide(0);
+        } else if (e.key === 'End') {
+            e.preventDefault();
+            goToSlide(totalSlides - 1);
+        }
+    });
+
+    // Touch / swipe
+    let touchStartX = 0;
+    let touchStartY = 0;
+    document.addEventListener('touchstart', (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+        touchStartY = e.changedTouches[0].screenY;
+    });
+    document.addEventListener('touchend', (e) => {
+        const dx = e.changedTouches[0].screenX - touchStartX;
+        const dy = e.changedTouches[0].screenY - touchStartY;
+        if (Math.abs(dy) > Math.abs(dx)) {
+            if (dy < -30) goToSlide(currentIndex + 1);
+            else if (dy > 30) goToSlide(currentIndex - 1);
+        }
+    });
+
+    // Wheel navigation
+    let lastWheelTime = 0;
+    document.addEventListener('wheel', (e) => {
+        const now = Date.now();
+        if (now - lastWheelTime < 1000) return;
+        if (Math.abs(e.deltaY) < 30) return;
+        lastWheelTime = now;
+        if (e.deltaY > 0) goToSlide(currentIndex + 1);
+        else goToSlide(currentIndex - 1);
+    }, { passive: true });
+
+    // Button navigation
+    document.getElementById('prevSlide').addEventListener('click', () => goToSlide(currentIndex - 1));
+    document.getElementById('nextSlide').addEventListener('click', () => goToSlide(currentIndex + 1));
+
+    // Scroll snap fallback (detect scroll via scroll event)
+    let scrollTimeout;
+    document.addEventListener('scroll', () => {
+        clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(() => {
+            const center = window.scrollY + window.innerHeight / 2;
+            let closest = 0;
+            let minDist = Infinity;
+            slides.forEach((slide, i) => {
+                const dist = Math.abs(slide.offsetTop - window.scrollY);
+                if (dist < minDist) { minDist = dist; closest = i; }
+            });
+            if (closest !== currentIndex) {
+                currentIndex = closest;
+                updateDots();
+            }
+        }, 150);
+    }, { passive: true });
+})();
+</script>
+</body>
+</html>
